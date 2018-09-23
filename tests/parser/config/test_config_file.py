@@ -23,19 +23,39 @@ class TestConfigFileParser:
             fp.write(content)
 
     @pytest.mark.parametrize('content,expected', [
-        ('''document_root /home
-        cpu_limit 2
-        ''', (2, '/home')),
-        ('''cpu_limit 2
-        document_root /home''', (2, '/home')),
-        ('''cpu_limit 2 document_root /home
-        ''', (2, '/home')),
-        ('''cpu_limit 2 document_root C:\\Users\\jpyatachkov\\Desktop''', (2, r'C:\Users\jpyatachkov\Desktop')),
-        ('''cpu_limit 2 document_root /f-1---1/folder.2/my_foler/fooolder''',
-         (2, '/f-1---1/folder.2/my_foler/fooolder')),
+        (
+                '''document_root /home
+                cpu_limit 2
+                host localhost
+                port 8080
+                ''',
+                (2, '/home', 'localhost', 8080)
+        ),
+        (
+                '''cpu_limit 2
+                document_root /home host localhost
+                port 8080''',
+                (2, '/home', 'localhost', 8080)
+        ),
+        (
+                '''cpu_limit 2 document_root /home host localhost
+                port 8080
+                ''',
+                (2, '/home', 'localhost', 8080)
+        ),
+        (
+                '''host localhost
+                port 8080
+                cpu_limit 2 document_root C:\\Users\\jpyatachkov\\Desktop''',
+                (2, r'C:\Users\jpyatachkov\Desktop', 'localhost', 8080)
+        ),
+        (
+                '''host localhost port 8080 cpu_limit 2 document_root /f-1---1/folder.2/my_foler/fooolder''',
+                (2, '/f-1---1/folder.2/my_foler/fooolder', 'localhost', 8080)
+        ),
     ])
     def test_correct_file_format(self, content, expected, mocker):
-        num_workers, document_root = expected
+        num_workers, document_root, host, port = expected
         self._prepare_config_file(content)
 
         with mocker.patch('os.path.exists', return_value=True):
@@ -43,14 +63,18 @@ class TestConfigFileParser:
 
         assert num_workers == parser.num_workers
         assert document_root == parser.document_root
+        assert host == parser.host
+        assert port == parser.port
 
     @pytest.mark.parametrize('content', [
         '',
         'num_workers 10',
         'cpu_limit 2',
+        'host localhost',
+        'port 8080',
         'document_root /home/folder',
-        'cpu_limit kfmg document_root /home',
-        'cpu_limit kfmg document_root 100',
+        'cpu_limit kfmg document_root /home host localhost port 80',
+        'cpu_limit 10 document_root /home host localhost port skfg',
     ])
     def test_incorrect_file_format(self, content, mocker):
         self._prepare_config_file(content)
