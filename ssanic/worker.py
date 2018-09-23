@@ -1,7 +1,7 @@
 from ssanic.parser.http import RequestParser
 
 
-class HttpServerWorker:
+class SsanicWorker:
 
     def __init__(self, document_root):
         self.document_root = document_root
