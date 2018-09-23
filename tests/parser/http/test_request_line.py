@@ -1,5 +1,6 @@
-from ssanic.parser.http import RequestLineParser
 import pytest
+
+from ssanic.parser.http import RequestLineParser
 
 
 @pytest.mark.parametrize('request_line,expected', [
