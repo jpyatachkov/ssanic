@@ -2,7 +2,7 @@ from ssanic.http.response import Headers
 
 
 def test_one_header():
-    expected_str = r'Content-Type: application/json\r\n'
+    expected_str = 'Content-Type: application/json\r\n'
     expected_repr = 'HEADERS: {}'.format(expected_str)
 
     h = Headers()
@@ -14,7 +14,7 @@ def test_one_header():
 
 def test_several_headers():
     initial_headers = (('Content-Type', 'application/json'), ('Server', 'Ssanic'))
-    expected_str = r'Content-Type: application/json\r\nServer: Ssanic\r\n'
+    expected_str = 'Content-Type: application/json\r\nServer: Ssanic\r\n'
     expected_repr = 'HEADERS: {}'.format(expected_str)
 
     h = Headers(initial_headers)

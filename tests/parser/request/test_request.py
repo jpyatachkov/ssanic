@@ -6,9 +6,9 @@ from ssanic.parser.request import RequestParser
 class TestRequestParser:
 
     @pytest.mark.parametrize('raw_request', [
-        r'GET /home/file1.txt/\r\n\r\n',
-        r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n',
-        r'PUT / HTTP/1.1\r\nContent-Type=application/json\r\n\r\nname=value1',
+        'GET /home/file1.txt/\r\n\r\n',
+        'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n',
+        'PUT / HTTP/1.1\r\nContent-Type=application/json\r\n\r\nname=value1',
     ])
     def test_calls_parse_head_if_request_has_2_delimiters(self, raw_request, mocker):
         parser = RequestParser()
@@ -24,9 +24,9 @@ class TestRequestParser:
         '',
         b'df',
         [],
-        r'HEAD / HTTP/1.1\r\n',
-        r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n',
-        r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r',
+        'HEAD / HTTP/1.1\r\n',
+        'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n',
+        'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r',
     ])
     def test_returns_false_if_request_has_not_2_delimiters(self, raw_request, mocker):
         parser = RequestParser()
@@ -39,10 +39,10 @@ class TestRequestParser:
         mocked_parse_head.assert_not_called()
 
     @pytest.mark.parametrize('raw_request, request_line_correct,headers_correct', [
-        (r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', True, True),
-        (r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', True, False),
-        (r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', False, True),
-        (r'GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', False, False),
+        ('GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', True, True),
+        ('GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', True, False),
+        ('GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', False, True),
+        ('GET index.html HTTP/1.1\r\nContent-Type=application/json\r\n\r\n', False, False),
     ])
     def test_ands_request_line_and_header_parsing_results(self, raw_request,
                                                           request_line_correct, headers_correct, mocker):

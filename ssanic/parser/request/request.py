@@ -7,7 +7,7 @@ __all__ = (
 
 
 class RequestParser:
-    DELIMITER = r'\r\n'
+    DELIMITER = '\r\n'
 
     def __init__(self):
         self.request_line = RequestLineParser()

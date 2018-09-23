@@ -7,7 +7,7 @@ __all__ = (
 
 class Headers(OrderedDict):
     KEY_VALUE_DELIMITER = ': '
-    HEADER_DELIMITER = r'\r\n'
+    HEADER_DELIMITER = '\r\n'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

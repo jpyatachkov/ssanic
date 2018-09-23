@@ -9,16 +9,9 @@ __all__ = (
 class Response:
     DEFAULT_READ_CHUNK_SIZE = 1024
 
-    def __init__(self, status_code, header_pairs, file_reader=None):
+    def __init__(self, status_code, header_pairs):
         self.status_line = StatusLine(status_code)
         self.headers = Headers(header_pairs)
-        self.file_reader = file_reader
 
-    async def write(self):
-        yield str(self.status_line)
-        yield str(self.headers)
-
-        if self.file_reader is not None:
-            async for line in self.file_reader.read(self.DEFAULT_READ_CHUNK_SIZE):
-                if line:
-                    yield line
+    def __str__(self):
+        return '{}\r\n{}\r\n'.format(str(self.status_line), str(self.headers))
