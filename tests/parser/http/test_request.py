@@ -1,6 +1,6 @@
 import pytest
 
-from ssanic.parser.http import RequestParser
+from ssanic.parser.request import RequestParser
 
 
 class TestRequestParser:
@@ -48,9 +48,9 @@ class TestRequestParser:
                                                           request_line_correct, headers_correct, mocker):
         parser = RequestParser()
 
-        mocked_request_line = mocker.patch('ssanic.parser.http.request_line.RequestLineParser.__call__',
+        mocked_request_line = mocker.patch('ssanic.parser.request.request_line.RequestLineParser.__call__',
                                            return_value=request_line_correct)
-        mocked_headers = mocker.patch('ssanic.parser.http.headers.HeadersParser.__call__',
+        mocked_headers = mocker.patch('ssanic.parser.request.headers.HeadersParser.__call__',
                                       return_value=headers_correct)
 
         assert parser(raw_request) == (request_line_correct and headers_correct)

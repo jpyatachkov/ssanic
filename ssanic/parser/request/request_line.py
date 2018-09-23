@@ -6,7 +6,7 @@ __all__ = (
 
 
 class RequestLineParser:
-    ALLOWED_SCHEMAS = (None, 'http', 'https')
+    ALLOWED_SCHEMAS = (None, 'request', 'https')
     REQUEST_LINE_REGEX_PATTERN = r'^(?P<method>[A-Z]+) ((?P<scheme>\w+)://)?(?(3)[^/]*)(?P<path>/?[^\?#]*/?)?(\?[^#]*)?(\#.*)? HTTP/1.1$'
 
     def __init__(self):

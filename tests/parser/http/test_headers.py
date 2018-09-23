@@ -1,6 +1,6 @@
 import pytest
 
-from ssanic.parser.http import HeadersParser
+from ssanic.parser.request import HeadersParser
 
 
 @pytest.mark.parametrize('headers,expected', [

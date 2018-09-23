@@ -1,4 +1,4 @@
-from ssanic.parser.http import RequestParser
+from ssanic.parser.request import RequestParser
 
 
 class SsanicWorker:
