@@ -2,6 +2,7 @@ import asyncio
 import mimetypes
 import os
 import socket
+from urllib.parse import unquote
 from datetime import datetime
 
 import uvloop
@@ -75,25 +76,32 @@ class SsanicWorker:
             return
 
         file_path = os.path.abspath(os.path.join(self.document_root, self.request_parser.request_line.path))
+        file_path = unquote(file_path)
 
-        print(self.document_root,
-              self.request_parser.request_line.path,
-              os.path.join(self.document_root, self.request_parser.request_line.path),
-              client)
+        if self.request_parser.request_line.path.endswith('/'):
+            file_path += '/'
 
         if self.document_root not in file_path:
-            print('INCORRECT FILE PATH{}'.format(client))
+            print('INCORRECT FILE PATH {}'.format(client))
             response = Response(403, _prepare_headers())
             await self._write(client, response)
             client.close()
             return
 
-        if os.path.isdir(file_path):
+        index_added = False
+
+        if file_path.endswith('/'):
+            index_added = True
             file_path = os.path.join(file_path, self.request_parser.request_line.INDEX_FILE_NAME)
 
         if not os.path.exists(file_path):
-            print('{} File not exist'.format(client))
-            response = Response(404, _prepare_headers())
+            print('{} FILE PATH DOES NOT EXIST {}'.format(client, file_path))
+
+            if index_added:
+                response = Response(403, _prepare_headers())
+            else:
+                response = Response(404, _prepare_headers())
+
             await self._write(client, response)
         else:
             print('{} OK'.format(client))
