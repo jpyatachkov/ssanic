@@ -8,15 +8,15 @@ def construct_cli_parser():
                         type=str,
                         default='',
                         help='Directory to serve static files')
-    parser.add_argument('host',
+    parser.add_argument('--host',
                         type=str,
                         default='localhost',
                         help='Host to bind to')
-    parser.add_argument('port',
+    parser.add_argument('--port',
                         type=str,
                         default='80',
                         help='Port to listen to')
-    parser.add_argument('--workers',
+    parser.add_argument('--num-workers',
                         type=int,
                         dest='num_workers',
                         default=1,

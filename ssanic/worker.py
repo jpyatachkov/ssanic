@@ -9,7 +9,21 @@ import uvloop
 from ssanic.http.response import Response
 from ssanic.parser.request import RequestParser
 
+__all__ = (
+    'create_sock_connection',
+    'SsanicWorker',
+)
+
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+def create_sock_connection(host, port, backlog=8):
+    # noinspection PyShadowingNames
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((host, port))
+    sock.listen(backlog)
+    sock.setblocking(False)
+    return sock
 
 
 def _prepare_headers():
@@ -26,14 +40,11 @@ class SsanicWorker:
     INDEX_FILE_NAME = 'index.html'
     SOCK_BUFFER_SIZE = 1024
 
-    def __init__(self, host, port, document_root):
+    def __init__(self, sock, document_root):
         self.document_root = os.path.abspath(document_root)
         self.request_parser = RequestParser()
 
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((host, port))
-        self.server.listen(8)
-        self.server.setblocking(False)
+        self.sock = sock
 
         self.loop = None
 
@@ -44,7 +55,7 @@ class SsanicWorker:
 
     async def _idle(self):
         while True:
-            client, _ = await self.loop.sock_accept(self.server)
+            client, _ = await self.loop.sock_accept(self.sock)
             print('REQUEST ACCEPTED {}'.format(client))
             self.loop.create_task(self._handle_request(client))
 
@@ -116,9 +127,10 @@ class SsanicWorker:
 
 
 if __name__ == '__main__':
-    worker = SsanicWorker('localhost', 8001, '/home/jpyatachkov/1')
+    sock = create_sock_connection('localhost', 8001)
+    worker = SsanicWorker(sock, '/tmp')
 
     try:
         worker.idle()
     except KeyboardInterrupt:
-        worker.server.close()
+        sock.close()
