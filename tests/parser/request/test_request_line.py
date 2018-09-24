@@ -46,11 +46,9 @@ def test_correct_request_line(request_line, expected):
     'GET/HTTP/1.1',
     'GET file:///myfile.txt HTTP/1.1',
     'get / HTTP/1.1',
-    'GET / HTTP/1.0',
     'GET / request/1.1',
     'GET / HTTP/1.1;sflg',
     'GET / HTTP/1.0\\r',
-    'GET / HTTP/1.0',
     'GET / HTTP/1.1\\r',
 ])
 def test_incorrect_request_line(request_line):

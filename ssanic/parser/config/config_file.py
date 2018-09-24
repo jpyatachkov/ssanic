@@ -61,11 +61,11 @@ class ConfigFileParser:
             if match:
                 self.host = match.group('host')
             else:
-                raise ValueError(_prepare_error_message('Host param (host) missing'))
+                self.host = '0.0.0.0'
 
             match = self._port_re.search(data)
 
             if match:
                 self.port = int(match.group('port'))
             else:
-                raise ValueError(_prepare_error_message('Port param (port) is missing'))
+                self.port = 80

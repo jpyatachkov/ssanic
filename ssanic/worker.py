@@ -133,7 +133,6 @@ class SsanicWorker:
                     with open(file_path, 'rb') as fp:
                         await self._write(client, response, fp)
 
-
         client.close()
 
     async def _read(self, client):

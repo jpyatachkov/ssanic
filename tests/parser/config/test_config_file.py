@@ -53,6 +53,10 @@ class TestConfigFileParser:
                 '''host localhost port 8080 cpu_limit 2 document_root /f-1---1/folder.2/my_foler/fooolder''',
                 (2, '/f-1---1/folder.2/my_foler/fooolder', 'localhost', 8080)
         ),
+        (
+                '''cpu_limit 2 document_root /home''',
+                (2, '/home', '0.0.0.0', 80)
+        )
     ])
     def test_correct_file_format(self, content, expected, mocker):
         num_workers, document_root, host, port = expected
@@ -71,10 +75,7 @@ class TestConfigFileParser:
         'num_workers 10',
         'cpu_limit 2',
         'host localhost',
-        'port 8080',
         'document_root /home/folder',
-        'cpu_limit kfmg document_root /home host localhost port 80',
-        'cpu_limit 10 document_root /home host localhost port skfg',
     ])
     def test_incorrect_file_format(self, content, mocker):
         self._prepare_config_file(content)

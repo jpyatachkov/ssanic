@@ -9,7 +9,7 @@ from ssanic.http.response.status_line import (
 
 @pytest.mark.parametrize('status_code,expected', [
     (200, 'OK'),
-    (400, 'Bad Request'),
+    (400, 'Bad_Request'),
     (403, 'Forbidden'),
     (404, 'Not Found'),
     (405, 'Method Not Allowed'),
