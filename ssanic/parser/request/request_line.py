@@ -8,7 +8,7 @@ __all__ = (
 class RequestLineParser:
     ALLOWED_SCHEMAS = (None, 'http', 'https')
     INDEX_FILE_NAME = 'index.html'
-    REQUEST_LINE_REGEX_PATTERN = r'^(?P<method>[A-Z]+) ((?P<scheme>\w+)://)?(?(3)[^/]*)/?(?P<path>[^\?#]*/?)?(\?[^#]*)?(\#.*)? HTTP/1.1$'
+    REQUEST_LINE_REGEX_PATTERN = r'^(?P<method>[A-Z]+) ((?P<scheme>\w+)://)?(?(3)[^/]*)/?(?P<path>[^\?#]*/?)?(\?[^#]*)?(\#.*)? HTTP/1.[0|1]$'
 
     def __init__(self):
         self._re = re.compile(self.REQUEST_LINE_REGEX_PATTERN)

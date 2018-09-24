@@ -56,22 +56,30 @@ class SsanicWorker:
 
     async def _idle(self):
         while True:
-            client, _ = await self.loop.sock_accept(self.sock)
-            print('REQUEST ACCEPTED {}'.format(client))
-            self.loop.create_task(self._handle_request(client))
+            client, addr = await self.loop.sock_accept(self.sock)
 
-    async def _handle_request(self, client):
+            addr = ':'.join([str(part) for part in addr])
+            now = datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
+
+            print('{} - {} REQUEST ACCEPTED'.format(addr, now))
+
+            self.loop.create_task(self._handle_request(client, addr))
+
+    async def _handle_request(self, client, addr):
         request = await self._read(client)
 
+        now = datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
+
         if not self.request_parser(request):
-            print('PARSING FAILED {}'.format(client))
+            print('REQUEST: "{}"'.format(request))
+            print('{} - {} PARSING FAILED'.format(addr, now))
             response = Response(400, _prepare_headers())
             await self._write(client, response)
             client.close()
             return
 
         if self.request_parser.request_line.method not in self.ALLOWED_METHODS:
-            print('METHOD NOT ALLOWED {}'.format(client))
+            print('{} - {} METHOD NOT ALLOWED'.format(addr, now))
             response = Response(405, _prepare_headers())
             await self._write(client, response)
             client.close()
@@ -83,7 +91,7 @@ class SsanicWorker:
         has_incorrect_slash = (not file_path.endswith('/')) and self.request_parser.request_line.path.endswith('/')
 
         if self.document_root not in file_path:
-            print('INCORRECT FILE PATH {}'.format(client))
+            print('{} - {} INCORRECT FILE PATH'.format(addr, now))
             response = Response(403, _prepare_headers())
             await self._write(client, response)
             client.close()
@@ -96,7 +104,7 @@ class SsanicWorker:
             file_path = os.path.join(file_path, self.request_parser.request_line.INDEX_FILE_NAME)
 
         if not os.path.exists(file_path):
-            print('{} FILE PATH DOES NOT EXIST {}'.format(client, file_path))
+            print('{} - {} FILE PATH DOES NOT EXIST {}'.format(addr, now, file_path))
 
             if index_added:
                 response = Response(403, _prepare_headers())
@@ -106,11 +114,11 @@ class SsanicWorker:
             await self._write(client, response)
         else:
             if has_incorrect_slash and not index_added:
-                print('{} FILE PATH WITH TERMINATING SLASH {}'.format(client, file_path))
+                print('{} - {} FILE PATH WITH TERMINATING SLASH {}'.format(addr, now, file_path))
                 response = Response(404, _prepare_headers())
                 await self._write(client, response)
             else:
-                print('{} OK'.format(client))
+                print('{} - {} OK'.format(addr, now))
 
                 headers = _prepare_headers()
                 headers.append(('Content-Length', str(os.path.getsize(file_path))))
@@ -119,8 +127,12 @@ class SsanicWorker:
 
                 response = Response(200, headers)
 
-                with open(file_path, 'rb') as fp:
-                    await self._write(client, response, fp)
+                if self.request_parser.request_line.method == 'HEAD':
+                    await self._write(client, response)
+                else:
+                    with open(file_path, 'rb') as fp:
+                        await self._write(client, response, fp)
+
 
         client.close()
 

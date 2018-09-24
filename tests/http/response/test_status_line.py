@@ -1,9 +1,10 @@
 # noinspection PyProtectedMember
+import pytest
+
 from ssanic.http.response.status_line import (
     StatusLine,
     _get_reason_phrase_by_code
 )
-import pytest
 
 
 @pytest.mark.parametrize('status_code,expected', [
