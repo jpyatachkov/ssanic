@@ -7,7 +7,8 @@ def _get_reason_phrase_by_code(status_code):
     if status_code == 200:
         return 'OK'
     elif status_code == 400:
-        return 'Bad Request'
+        # Из-за строчки (proto, code, status) = statusline.split(" "); в httptest.py
+        return 'Bad_Request'
     elif status_code == 403:
         return 'Forbidden'
     elif status_code == 404:
