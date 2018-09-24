@@ -4,7 +4,7 @@ import argparse as ap
 def construct_cli_parser():
     parser = ap.ArgumentParser()
 
-    parser.add_argument('document_root',
+    parser.add_argument('--document_root',
                         type=str,
                         default='',
                         help='Directory to serve static files')

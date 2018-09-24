@@ -7,7 +7,7 @@ __all__ = (
 
 
 def _prepare_error_message(message):
-    return 'Incorrect config: {}.'.format(message)
+    return 'Incorrect httpd.conf: {}.'.format(message)
 
 
 class ConfigFileParser:
