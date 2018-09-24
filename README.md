@@ -1,5 +1,7 @@
 # Ssanic - simple web server for TP HighLoad course
 
+[![Build Status](https://travis-ci.org/jpyatachkov/ssanic.svg?branch=master)](https://travis-ci.org/jpyatachkov/ssanic)
+
 ![sanic](https://proxy.duckduckgo.com/iur/?f=1&image_host=http%3A%2F%2Ffc08.deviantart.net%2Ffs70%2Ff%2F2011%2F216%2F3%2Fa%2Fi_drew_sanic_hegehog_by_andyparka-d44xhhu.jpg&u=http://orig08.deviantart.net/402f/f/2011/216/3/a/i_drew_sanic_hegehog_by_andyparka-d44xhhu.jpg)
 
 `asyncio`-based dummy implementation of simple web server.
